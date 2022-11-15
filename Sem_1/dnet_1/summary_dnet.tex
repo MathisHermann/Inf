@@ -19,7 +19,7 @@ Diese Zusammenfassung ist anhand der Lernziele aufgebaut. Dementsprechend sind n
 
 
 
-\paragraph{Client-Server Paradigma} -- Meiste Kommunikation; Daten auf ServerM User können Daten auf Server bearbeiten
+\paragraph{Client-Server Paradigma} -- Meiste Kommunikation; Daten auf Server; User können Daten auf Server bearbeiten
 
 \paragraph{Peer-to-Peer Paradigma} -- Rechner kann Server und Client sein; Einfach aufzusetzen, weniger Komplexität, weniger Kosten; Keine zentralisierte Administration, nicht so sicher, nicht skalierbar
 
@@ -887,44 +887,103 @@ Reserve & .241 & .255\\
 
 \paragraph{Anforderungen von Anwendungen an die Kommunikation} Es gibt Anwendungen, welche grosse und andere die kleine Datenblöcke senden. Dafür werden zwei Protokolle unterschieden:
 
+
+\paragraph{Protokolle in Schicht 4}
+Am verbreitetsten für Schicht 4 sind die Protokolle TCP und UDP.
+
+
 \emph{TCP} -- Verbindungsorientierte, fehlerfreie Übertragung; viel Overhead -- kann also langsam werden; Anwendungen benötigen einen zuverlässigen Dienst
 
 \emph{UDP} -- Anwendungen mit Nachrichten kürzer als die MSS; verbindungslos -- schnell; Jedes Datagramm wird am Ziel einzeln und sofort der Anwendung abgeliefert;
 
-\paragraph{Protokolle in Schicht 4}
 
+\begin{center}
+\includegraphics[width=12cm]{img/09_protocols.png}
+\end{center}
 
 \subsection{TCP}
+TCP baut eine bidirektionale (verbindungsorientierte) Verbindung zwischen Client und Server auf. Dabei werden zwei Datenströme (A $\leftarrow$ B und A $\rightarrow$ B) vorbereitet und kontrolliert.
+
+TCP segmentiert grosse Blöcke, nummeriert sie, bestätigt empfangene Segmente, wiederholt nicht bestätigte Segmente, ordnet die Reihenfolge empfangener Segmente und regelt die Geschwindigkeit der Übertragung. 
+
+
+Wenn TCP verwendet wird, wird -- gesteuert durch das Feld \emph{Control} -- eine bidirektionale Verbindung aufgebaut. Dabei werden \emph{1)} die Maximum Segment Site (MSS), \emph{2)} Selective Acknowledgement (Ja/Nein) und \emph{3)} die Skalierung der Window-Size vereinbart.
 
 \paragraph{TCP (Header und Bedeutung der Felder)}
+\begin{itemize}
+\item Source Port (16 Bit) -- Bezeichnung der Anwendung auf der Quellrechner
+\item Destination Port (16 Bit) -- Bezeichnung der Anwendung auf der Empfangsrechner
+\item Sequence Number (32 Bit) -- Zählen der Bytes, welche gesendet werden
+\item Acknowledge Number (32 Bit) -- Zählen der Bytes, die empfangen werden und Bestätigung bei ACK
+\item Header Length (4 Bit) -- Länge des Headers
+\item Reserved (6 Bit) -- 
+\item Control Bits (6 Bit) -- 6 Bits für 6 verschiedene Flags: Urgent (URG), Acknowledgement (ACK), Push (PSH), Reset (RST), Synchronize Sequence Numbers (SYN), Finish (FIN)
+\item Window (16 Bit) -- gibt an, wie viele Bytes eine Station senden darf, bevor von der Gegenseite der Empfang der Daten bestätigt wurde; Wird gegenseitig zugesprochen
+\item Checksum (16 Bit) -- 
+\item Urgent (16 Bit) -- 
+\item Options (0 or 32 Bit) -- 
+\end{itemize} 
 
 
-\paragraph{Verbindungsaufbau TCP}
+\paragraph{Verbindungsaufbau TCP} Für den Verbindungsaufbau wird ein Drei-Wege-Handshake ohne Payload angewendet (send nach received):
+\begin{enumerate}
+\item Send SYN (Sender $ \rightarrow $ Empfänger)
+\item Send SYN, ACK (Sender $ \leftarrow $ Empfänger)
+\item Send  ACK (Sender $ \rightarrow $ Empfänger)
+\end{enumerate}
 
-\paragraph{Schwachstellen TCP}
+Danach ist eine Verbindung etabliert.
+
+
+\begin{center}
+\includegraphics[width=12cm]{img/09_tcp_handshake.png}
+\end{center}
+
+\paragraph{Verbindungsabbau TCP} Für den Verbindungsabbau werden vier Schritte benötigt (send nach received):
+\begin{enumerate}
+\item Send FIN (Sender $ \rightarrow $ Empfänger)
+\item Send ACK (Sender $ \leftarrow $ Empfänger)
+\item Send  FIN (Sender $ \leftarrow $ Empfänger)
+\item Send  ACK (Sender $ \rightarrow $ Empfänger)
+\end{enumerate}
+
+Die etablierte Verbindung wird entweder so abgebaut oder es findet ein Time-Out statt.
+
+\paragraph{Schwachstellen TCP} Wenn der Client (Sender) den dritten Schritt nicht sendet, bleiben beim Server (Empfänger) ggf. RAM-Ressourcen reserviert. Wenn viele Clients dies machen, dann kann der Server langsam werden.
+
+
+
 
 
 \subsection{UDP}
 macht keine Flusskontrolle
 \paragraph{UDP (Header und Bedeutung der Felder)}
 
-\paragraph{Fehlerkorrektur}
-
-\paragraph{Flusssteuerung}
-
-\paragraph{Vorteile und Gefahren UDP}
 
 
 
 
 
 
+\paragraph{Fehlerkorrektur} Wenn ein Segment nicht ankommt sendet der Empfänger 3-mal eine ACK. Somit wird dem Sender gezeigt, dass dieses Segment erneut gesendet werden soll. Der Empfänger fordert jedes Segment an, welches nicht in der erwarteten Reihenfolge ankommt -- \emph{Fast Retransmission}.
+
+\paragraph{Flusssteuerung / Flusskontrolle} Die Window-Size wird jedesmal halbiert, wenn ein Segment nicht angekommen ist. Somit wird der Fluss gesteuert, damit die Netze nicht überlastet werden. Wenn Segmente wieder durchkommen, wird die Window-Size wieder vergrössert.
+
+Flusskontrolle wird in UDP nicht gemacht.
+
+\paragraph{Vorteile und Gefahren UDP} Da der Header von UPD sehr klein ist, entsteht wenig Overhead. Somit können kurze Nachrichten effizient und schnell ausgeführt werden.
+
+Beim UDP-Empfänger wird jedes empfangene Datagramm sofort an die Anwendung geliefert.
+
+
+Damit e.g. VoIP funktioniert, wird für die Sprache das Real-Time-Protocol (RTP) verwendet. Damit werden die Datagramme nummeriert.
 
 
 
 
 
-\section{}
+
+\section{Anwendungsschicht}
 
 
 \end{document}
