@@ -13,7 +13,7 @@
 \author{Mathis Hermann}
 \date{\today}
 \maketitle
-Diese Zusammenfassung ist anhand der Lernziele aufgebaut. Dementsprechend sind nicht ganz alle Themen der Vorlesung enthalten.
+Diese Zusammenfassung ist anhand der Lernziele aufgebaut. Dementsprechend sind nicht ganz alle Themen der Vorlesung enthalten. It's been a f*cking pain...
 
 \section{Übersicht über Datennetze}
 
@@ -869,6 +869,7 @@ Reserve & .241 & .255\\
 
 \newpage
 \section{Transportschicht}
+Schicht 4 sorgt dafür, dass der Sendet, so langsam sendet, wie die langsamste Leitung senden kann.
 
 \paragraph{Aufgaben der Transportschicht (Schicht 4)} 
 \begin{itemize}
@@ -924,6 +925,16 @@ Wenn TCP verwendet wird, wird -- gesteuert durch das Feld \emph{Control} -- eine
 \item Options (0 or 32 Bit) -- 
 \end{itemize} 
 
+\paragraph{TCP Header Flags im Feld Control}
+\begin{itemize}
+\item \emph{URG} -- Urgent (wird nicht mehr benützt)
+\item \emph{ACK} -- Acknowledgement: Ist dann gesetzt, wenn die Verbindung
+geöffnet ist.
+\item \emph{PSH} -- Push: Zeigt das letzte Segment eines Datenblocks an. Wenn ein Empfänger ein Segment mit gesetztem PSH erhält, so setzt er die Segmente zusammen und übergibt den Datenblock der Anwendung.
+\item \emph{RST} -- Reset
+\item \emph{SYN} -- Synchronize Sequence Numbers (siehe unten)
+\item \emph{FIN} -- No more data from sender
+\end{itemize}
 
 \paragraph{Verbindungsaufbau TCP} Für den Verbindungsaufbau wird ein Drei-Wege-Handshake ohne Payload angewendet (send nach received):
 \begin{enumerate}
@@ -979,12 +990,479 @@ Beim UDP-Empfänger wird jedes empfangene Datagramm sofort an die Anwendung geli
 Damit e.g. VoIP funktioniert, wird für die Sprache das Real-Time-Protocol (RTP) verwendet. Damit werden die Datagramme nummeriert.
 
 
+\paragraph{Abschluss}
+UDP ist gefährlich und TCP ist gutmütig dafür langsam.
+
 
 
 
 
 \section{Anwendungsschicht}
+Anwendungen übernehmen die Aufgaben der theoretischen Schichten \emph{Darstellung} und \emph{Sitzung}.
 
+\subsection{Position der Anwendung innerhalb des Protokoll-Stacks}
+Die Anwendung 
+\begin{itemize}
+\item ist die oberste Schicht im Protokollstack und stösst den Datenaustausch an -- ist der Beginn der Kommunikation
+\item hat ganz eigene Regeln, wie zwei Endsysteme Daten miteinander austauschen (e.g. HTTP -- geht immer über TCP)
+\item greift über einen "Socket" auf die Transportschicht zu. Socket: Über das Vier-Tupel [Quell-IP-Adresse, Quell-Port-Nr., Ziel-IP-Adresse, Ziel-Port-Nr.] (ist der Socket) kann eine Verbindung eindeutig bestimmt werden.
+\end{itemize}
+
+
+\subsection{Standards der Internetanwendungsprotokolle}
+
+\paragraph{HTTP} geht über TCP und Port 80; Möglicher Protokollstack: [HTTP; TCP: IP; Ethernet]; Ablauf, wenn alle Speicher leer sind:
+\begin{itemize}
+\item Ermittlung der MAC-Adresse des Default Gateway: ARP-Anfrage für IPv4 oder Neighbour Discovery mit ICMPv6
+\item Auflösung des Domainnames in eine IP-Adresse mit der Anwendung DNS
+\item Verbindungsaufbau mit dem TCP-3-Weg-Handshake von Endgerät zu Endgerät
+\item Datenaustausch
+\item Beim Schliessen des Browsers: Abbau der TCP-Verbindung
+\end{itemize}
+
+\paragraph{eMail}
+Möglicher Protokollstack: [SMTP/POP3; TCP: IP; Ethernet]
+\begin{itemize}
+\item SMTP -- Simple Mail Transfer Protocol (port 25)
+\item POP3 -- Post Office Protocol (port 110)
+\item IMAP -- Internet Message Access Protocol (port 143)
+\end{itemize}
+
+Wenn die Mail-Server in der Cloud sind erfolgt der Nachrichtenaustausch über https.
+
+\paragraph{DHCP} Dynamic Host Configuration Protocol; DHCP Server port 67; DHCP Client port 68; Möglicher Protokollstack: [DHCP; UDP: IP; Ethernet] (UDP, da keine IP-Adresse bekannt);
+
+
+\paragraph{FTP}
+
+\subsection{Ansätze DNS}
+Wird benötigt für die Zuordnung von Servernamen zu IP-Adressen und umgekehrt. Die DNS löst einen Full Qualified Domain Name (FQDN) in eine IP-Adresse auf.
+
+\begin{itemize}
+\item ist dezentral und hierarchisch (delegiert nach unten) -- Root-Level Domain (Server); Top-Level Domain (Server); Second Level Domain (Server)
+\item beruht auf Delegation
+\item Die IP-Adresse des Servers, bestimmt dessen Betreibers
+\end{itemize}
+
+Verschiedene Resource records eines DNS Servers:
+\begin{itemize}
+\item A -- IPv4 Adresse
+\item AAAA -- IPv6 Adresse
+\item NS -- Angabe des authorativen Name Servers
+\item MX -- Mail exchange record
+\item CNAME -- Alias
+\item SOA -- Start Of zone Authority
+\item PTR -- Domain Name Pointer (inverse Operation)
+\item TXT -- TeXT string (gefährlich; Datenexfiltration)
+\end{itemize}
+
+\paragraph{Angriffspunkte} Die Antworten werden nicht auf Authentizität geprüft und könnten gefälscht werden; Mit DNSSEC und DNS over HTTPS gibt es aber neue, sicherere Varianten von DNS.
+
+
+\paragraph{Ablauf DNS}
+\begin{enumerate}
+\item
+\end{enumerate}
+
+
+
+\section{Routing-Konzepte}
+
+\subsection{Aufgaben eines Routers}
+Der Router hat zwei Aufgaben: \emph{1)} Finden des besten Weges zu den Zielnetzen und \emph{2)} Weiterleitung der Pakete.
+
+\paragraph{Bestimmung des besten Weges} In vermeshten Netzen wird meist ein dynamisches Routing Protokoll ausgeführt.
+\begin{itemize}
+\item Ein Routing Protokoll benötigt eine \emph{Metrik}, um den Weg der Pakete zu bestimmen
+\item Metriken:
+  \begin{itemize}
+  \item Anzahl Hops (RIP)
+  \item Summe der Kosten der einzelnen Links (konstante / Datenrate) OSPF; Die Kosten  eines Links sind proportional zur Bandbreite des Links
+  \end{itemize}
+\end{itemize}
+
+\subsection{Longest Prefix Matching}
+Die Einträge in der Routing Tabelle sind IP-Netze. 
+Es wird der Eintrag mit der längsten Subnetzmaske gewählt; der spezifischste Eintrag. Dies bedeutet, dass immer die gesamte Routing Tabelle abgesucht werden muss.
+
+
+\begin{center}
+\includegraphics[width=12cm]{img/11_lpm.png}
+\end{center}
+
+
+\subsection{Paketweiterleitung}
+
+\subsection{Routing-Tabellen}
+Schritte der Paketweiterleitung:
+\begin{enumerate}
+\item Entfernung des L2-Rahmens beim eingehenden Paket
+\item Finden der Zieladresse im IP-Header
+\item Absuchen der Routing Tabelle und Bestimmung des Ausgangs-Interfaces
+\item Entweder Weiterleitung an Zielgerät (Bildung eines neuen Ethernet Headers) -- oder Weiterleitung an den Next-Hop
+\item Paket wird verworfen, falls kein zutreffender Eintrag in der Routing Tabelle
+\end{enumerate}
+
+
+\paragraph{Prinzip}
+\begin{itemize}
+\item Jeder Router trifft seine Entscheidungen für die Weiterleitung selbstständig aufgrund seiner Routing Tabelle. R1 weiss nicht was bei R2 in der Tabelle steht
+\item Die Einträge in der Routing Tabelle von R1 sind nicht notwendigerweise konsistent mit R2
+\item Information über den kürzesten Weg beinhaltet nicht, dass alle Router auf dem Weg den Rückweg kennen
+\end{itemize}
+
+Der Weg zu den entfernten Netzen muss entweder durch statische Routen oder durch ein dynamisches Routing Protokoll eingetragen werden.\\
+
+Beiträge in der Routing Tabelle:
+\begin{itemize}
+\item \emph{Direkt angeschlossene Netzt} -- Alle an einen Router angeschlossenen Netze, deren Router-IF eine gültige IP Adresse konfiguriert haben und bei denen das Schicht-1/2 Protokoll läuft werden automatisch als \emph{directly connected routes} in die Routing Tabelle eingetragen
+\item \emph{IP Adresse des lokalen IF} -- IP Adresse des lokalen Router IFs (/32 oder /128)\
+\item \emph{Statische Routen} -- Werden durch den Administratoren manuell in die Routing Tabelle eingetragen
+\item \emph{Statische Routen}
+\end{itemize}
+
+\subsection{Administrative Distanz}
+Gibt es für ein Zielnetz mehrere Quellen für die Routinginformation, wird die Quelle mit der niedrigeren administrativen Distanz in Routing Tabelle eingetragen.
+
+\begin{center}
+\begin{tabular}{ | m{4.2cm} | m{3cm} | } 
+Quelle der Route & Administrative Distanz\\ 
+\hline
+Direkt angeschlossen & 0\\
+Statische Route & 1\\
+EIGRP summary route & 5\\
+External BGP & 20\\
+Internal EIGRP & 90\\
+IGRP & 100\\
+OSPF & 110\\
+IS-IS & 115\\
+RIP & 120\\
+External EIGRP & 170\\
+Internal BGP & 200\\
+\end{tabular}
+\end{center}
+
+\paragraph{Beispiele IPv4 und IPv6 Routing Tabellen}
+
+\begin{center}
+\includegraphics[width=12cm]{img/11_ipv4_route.png}
+\end{center}
+
+
+
+\begin{center}
+\includegraphics[width=12cm]{img/11_ipv6_route.png}
+\end{center}
+
+
+
+\section{Statisches Routing}
+
+\subsection{Informationen zum Weiterleiten von Paketen}
+Ziel-Adresse, Quell-Adresse
+
+\subsection{Vor- und Nachteile und Einsatzgebiete von statischem Routing}
+
+\paragraph{Vorteile}
+\begin{itemize}
+\item Benötigen wenig Ressourcen
+\item Routing ist stabil, sobald Routen definiert sind
+\item Einfache Konfiguration in kleinen Netzwerken
+\item Kein Routing Protokoll verwendet -- Weniger Angriffspunkte
+\end{itemize}
+
+Statisches Routing soll mit soviel Einträgen wie nötig, aber mit sowenig Einträgen wie möglich realisiert werden.
+
+\paragraph{Nachteile}
+\begin{itemize}
+\item Aufwand für Unterhalt nicht zu unterschätzen
+\item Durch falsche Konfiguration von Routen können Routing Loops entstehen
+\item Änderungen an Topologie im Netzwerk müssen manuell auf jedem Router nachgepflegt werden
+\end{itemize}
+
+
+\paragraph{Einsatzgebiete} Firmennetze werden oft als Hub-and-Spoke Netze entworfen. Der Hub bekommt eine statische Route zu jedem Stub-Netz; Stub-Router erhält eine Default-Route.
+
+
+\subsection{Stub-Netzwerk und Stub-Router}
+Ein Netz, das nur einen Router und nur Weg zu einem Internetwork hat -- Wie Blatt am Baum; \emph{Stub-Router R1 erhält Default Route auf das WAN-Netz}; Router R2 erhält statische Route zum Stub-Netz.
+
+\begin{center}
+\includegraphics[width=12cm]{img/12_stub.png}
+\end{center}
+
+
+\subsection{Typen von statischen Routen}
+\begin{itemize}
+\item Standard statische Routen -- Bekanntgabe des Weges zu einzelnen Netzen
+\item Default Routen -- Aller Verkehr zu unbekannten Zielen nimmt einen bestimmten Weg (IPv4: 0.0.0.0/0; IPv6: ::/0)
+\item Floating Routen -- Angaben eines Backup Weges für den Fall, dass das Routing Protokoll ausfällt
+\item Summary Routen -- Der Weg zu einer Reihe von Netzen wird zusammengefasst mit einer einzigen Wegangabe
+\end{itemize}
+
+\subsection{Next-Hop und IF-Routen}
+
+\paragraph{Next-Hop}
+Es werden Ziel-Netz (Netzadresse und Subnetzmaske) und IP-Adresse des next-hop angegeben. Spezifische Angabe von Empfänger, kann also in multi-access Netzen verwendet werden.
+
+\verb+R2(config)# ip route 172.16.3.0 255.255.255.0 172.16.2.1+
+\paragraph{IF-Routen}
+Es werden Ziel-Netz (Netzadresse und Subnetzmaske) und der IF-Ausgang des next-hop angegeben. Da kein spezifischer Empfänger angegeben ist, wird ggf. ein Broadcast gesendet (also nur für P2P empfohlen, sonst können alle mitlesen).
+
+\verb+R2(config)# ip route 172.16.3.0 255.255.255.0 ser0/0/0+
+
+\paragraph{Wann welche anwenden}
+Bei Multiaccess: Next-Hop; Bei P2P: IF-Routen.
+
+\subsection{statische Routen für IPv4 und IPv6 in allen Varianten konfigurieren}
+\begin{itemize}
+\item \emph{Default Route}
+    \begin{itemize}
+    \item \emph{IPv4} -- \verb+R1(config)# ip route 0.0.0.0 0.0.0.0 ser0/0/0+
+    \item \emph{IPv6} -- \verb+R1(config)# ipv6 route ::/0 s0/0/0+
+    \end{itemize}
+\item \emph{Summary Route}
+    \begin{itemize}
+    \item \emph{IPv4} -- \verb+Rx(config)#ip route 172.16.0.0 255.255.252.0 s0/0/0+
+    \item \emph{IPv6} -- \verb+Rx(config)#ipv6 route 2001:db8:acad::/62 s0/0/0+
+    \end{itemize}
+
+\item \emph{Floating Static Route}
+    \begin{itemize}
+    \item \emph{IPv4} -- \verb+R1(config)#ip route 0.0.0.0 0.0.0.0 172.16.2.2 5+ (Administrative Distanz = 5)
+    \item \emph{IPv6} -- \verb+R1(config)#ipv6 route ::/0 2001:db8:acad:4::2 111+
+    \end{itemize}
+
+\end{itemize}
+
+
+
+
+
+
+\section{Dynamisches Routing}
+Die Aufgaben sind \emph{1)} das Auflisten von entfernten Netzen, \emph{2)} die Laufende Aktualisierung der Routing-Information, \emph{3)} die Wahl des besten Weges zum Ziel, \emph{4)} das Finden eines neuen Weges zu einem Ziel im Falles eines Leitungsunterbruchs.\\
+
+Datenstrukturen, Nachrichtenformate und Algorithmen werden definiert.
+
+\subsection{Vor- und Nachteile von statischem Routing}
+
+
+\paragraph{Vorteile}
+\begin{itemize}
+\item Skalieren besser
+\item Automatisches Re-Routing bei Leitungsunterbüchen
+\end{itemize}
+
+\paragraph{Nachteile}
+\begin{itemize}
+\item i.A weniger sicher, weil Informationen in Band übers Netz ausgetauscht werden
+\item Höhere Belastung von CPU, RAM und Leitungen
+\item Wege können ändern
+\item Eher komplexe Implementation
+\end{itemize}
+
+
+
+\subsection{Wann lohnt es sich dynamisches Routing einzusetzen}
+Wenn sich die Netz-Struktur dynamisch ändert und regelmässig die Vorteile von dynamischem Routing relevant sind (e.g. Skalierbarikeit, Leitungsunterbrüche etc.)
+
+\subsection{Autonomes System}
+Ein \emph{autonomes System} (AS) ist eine Menge von Routern, die unter einer einheitlichen Verwaltung stehen. Typischerweise haben mittlere und grössere ISPs ein eigenes AS. Im allgemeinen Sprachgebrauch denkt man oft an eine Gruppe von Routern, die das gleiche Routing Protokoll benützen. Interior Gateway Protokolle (IGPs) sind Routing Protokolle, die innerhalb eines AS ausgeführt werden. Wesentlich komplexer sind Exterior Gateway Protokolle (EGPs), die zwischen AS Routen austauschen.
+
+
+\subsection{Distanz-Vektor Protokolle}
+Ein Router hat die Information, wie weit weg sich das Ziel in gegebener Richtung befindet. Dafür wird die Distanz-Vektor Technologie verwendet:
+\begin{itemize}
+\item DV Router sendet periodische Updates mit dem Inhalt seiner Routingtabelle
+\item Updates werden per Broadcast oder Multicast gesendet; alle hören Broadcast aber nur TN, welche das Routing-Protokoll ausführen können etwas damit anfangen
+\item DV Router kennt die Topologie des Netzes nicht; weiss nicht definitiv, wieviele Router im Netz mitmachen
+\item Routing-Prozess wird dezentral durchgeführt; Berechnung Routing-Tabelle ist eine verteilte Anwendung
+\end{itemize}
+
+\paragraph{Algorithmus}
+Der Algorithmus umfasst jeweils einen Mechanismus für \emph{1)} das Senden und Empfangen von Routing-Informationen, \emph{2)} die Berechnung des besten Weges zum Ziel und das Eintragen in die Routing-Tabelle und \emph{3)} das Entdecken von Änderungen in der Netz-Topologie und Massnahmen, um das Routing aktuell zu halten.
+
+\paragraph{Vorteile}
+\begin{itemize}
+\item Sehr einfache Handhabung (Wenig Ausbildung nötig)
+\item Benötigt wenig Rechnerleistung
+\end{itemize}
+
+\paragraph{Nachteile}
+\begin{itemize}
+\item Konvergiert nur langsam
+\item Skaliert nicht
+\item Neigt zu Routingschleifen
+\end{itemize}
+
+
+
+\paragraph{klassenbezogenes -- klassenloses Routing}
+Wird in einem AS mit klassenbezogenen Netzen gearbeitet oder haben alle beteiligten Netze den gleichen Netzteil, so können klassenbezogene Routingprotokolle eingesetzt werden. Bei klassenbezogenen Routingprotokollen werden in den Updates die Netzadressen ohne Subnetzmasken ausgetauscht. Subnetze werden immer auf klassenbezogne Netze aufgerundet. So gibt der Router R1 in Abb. 13.6 dem Nachbarn R2 anstatt dem Subnetz 172.16.1.0/24 das zugehörige klassenbezogne Netz 172.16.0.0/16 bekannt.\\
+
+RIPv1 und IGRP waren klassenbezogene Routing Protokolle. Nachfolgende Abbildung veranschaulicht die Problematik klassenbezogener Protokolle. Der Router R3 wird dem Router R2 ebenfalls das klassenbezogene Netz 172.16.0.0 bekannt geben.\\
+
+Werden Netze unterteilt in Subnetze verschiedener Länge, so muss bei den Updates notwendigerweise zu jedem Netz die Netzmaske mitgegeben werden. Man spricht von klassenlosen Routingprotokollen. RIPv2 und EIGRP sind die die klassenlosen Varianten obiger klassenbezogener Protokolle.
+
+\begin{center}
+\includegraphics[width=12cm]{img/13_classless.png}
+\end{center}
+
+
+\subsection{RIP v2 für Firmennetz}
+RIPv2 ist klassenlos. Als Metrik wird die Anzahl Hops verwendet (normalerweise begrenzt auf 15). Ist ein Netz weiter entfernt als die definierten Anzahl Hops, gilt es als nicht erreichbar.
+
+Schritte zur Konfiguration:
+\begin{enumerate}
+\item Optional (sofern am lokalen Router angeschlossen -- R1): Statische Defaultrouten setzen
+\item Routing Submenu wählen
+\item RIP version 2 wählen und automatische Summarisierung ausschalten (\verb+no auto-summary+)
+\item Bekanntgabe der Netze, die sich am Routing beteiligen sollen
+\item Die Netze zu den Clients sollen passiviert werden; Es werden über die IF, an welchen clients angeschlossen sind keine Routing Updates gesendet
+\item Optional (Router R1): Defaultroute an die anderen Router weiterverbreiten
+\end{enumerate}
+
+
+\begin{center}
+\includegraphics[width=12cm]{img/13_rip.png}
+\end{center}
+
+
+\begin{center}
+\includegraphics[width=12cm]{img/13_rip2.png}
+\end{center}
+
+
+
+
+
+\section{OSPF}
+\subsection{Ziele von OSPF}
+\begin{itemize}
+\item Klassenlos: Adressräume mit variabel landen Subnetzmasken
+\item Routing-Prozess muss robust sein
+\item Routing-Prozess soll rasch konvergieren und rasch auf Änderungen reagieren
+\item Protokoll soll skalieren
+\item Bandbreite der Links soll berücksichtigt werden
+\end{itemize}
+
+\subsection{Vor- und Nachteile von LS Protokollen}
+
+\paragraph{Vorteile}
+\begin{itemize}
+\item Jeder Router hat seine eigene Sicht des ganzen Netzes
+\item Rasche Konvergenz
+\item Updates nur bei Netzänderungen
+\item Überwachung der Links mit Hello Paketen
+\end{itemize}
+
+\paragraph{Nachteile}
+\begin{itemize}
+\item Benötigt erheblich Memory für die LS-DB
+\item Hohe Last auf der CPU, wenn der Dijkstra-Algorithmus gerechnet werden muss
+\end{itemize}
+
+\subsection{Konzepte von OSPF}
+\begin{itemize}
+\item OSPF als Schicht-3 Protokoll
+\item Verschiedene Paket-Typen
+\item Das Hello-Protokoll und den Aufbau von Nachbarschaften
+\item Die endliche Zustandsmaschine beim Aufbau einer Nachbarschaft
+\item Das Versenden von Link State Updates
+\item Die Bestimmung der Router ID
+\item Die Besonderheiten auf Multiaccess Netzen: Designated Router
+\end{itemize}
+
+\subsection{Funktionsweise}
+
+
+
+
+
+
+\subsection{Metrik von OSPF und Parameter Bandwidth}
+OSPF rechnet mit Kosten eines Links -- umgekehrt proportional der Datenrate des Links: \verb+cost  = reference-bandwidth / IF bandwidth+\\
+
+Standardmässig wird die Referenz-Datenrate auf 100Mbps gesetzt. Die Referenz-Bandbreite kann konfiguriert werden (in Mbps -- Beispiel setzt auf 1 Gbps): \verb+R1(config router)#auto-cost reference-bandwidth 1000+\\
+Die Einheit der Referenz-Datenrate ist Mbps.
+
+
+\paragraph{Kosten von Serial Links}
+Bei Ethernet-IF ist einem Router die Datenrate bekannt. Bei WAN-Links müssen (DTE-Ende) die Bandbreite (\emph{bandwidth}) konfiguriert werden -- \emph{Standardwert ist 1.544 Mbps}. Wenn der Link dem Standardwert entspricht, muss nicht angepasst werden.
+
+Damit kein asymmetrisches Routing entsteht, müssen bei allen IF am gleichen Netz die gleiche Bandbreite eingestellt werden (vgl. Bild):
+\begin{lstlisting}
+// Router 1
+R1(config)#interface serial0/0/1
+R1(config-if)#bandwidth 64
+
+// Router 2
+R2(config)#interface serial0/0/1
+R2(config-if)#bandwidth 1024
+
+// Router 3
+R3(config)#interface serial0/0/0
+R3(config-if)#bandwidth 64
+R3(config)#interface serial0/0/1
+R3(config-if)#bandwidth 1024
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[width=12cm]{img/14_cost.png}
+\end{center}
+
+
+\subsection{Dijkstra-Algorithmus}
+Berechnet über einer vermaschten Topologie einen Spannbaum als logische Topologie. Spannbaum gibt kürzesten Weg von einem Knoten aus zu allen anderen Knoten. Wenn diese Berechnung bekannt ist, kann der Weg zu den zugehörigen Netzen in der Routing-Tabelle eingetragen werden. Wird nur innerhalb einer Area berechnet.
+\begin{lstlisting}
+LS-Algorithmus fuer den Knoten u (Quelle):
+1  Initialisierung:
+2  N={u}
+3  fuer alle Knoten v, die noch nicht in N enthalten sind:
+4    wenn v ein Nachbar von u ist
+5       dann D(v) = c(u,v)
+6  sonst D(v) = inf
+7  Wiederhole:
+8    finde einen Knoten w, der noch nicht in N ist, so dass D(w)
+9      minimal ist und fuege w zu N
+10    Berechne D(v) neu fuer jeden Nachbarn v von w, der nicht in N ist:
+11      D(v) = min(D(v), D(w) + c(w,v) )
+12  /* Die neuen Kosten zu v sind entweder die alten Kosten zu v oder
+13   die bekannten Kosten des kuerzesten Pfades zu w, zuzueglich
+14   der Kosten von w zu v */
+15 bis alle Knoten in N sind
+\end{lstlisting}
+
+\subsection{OSPFv2 und OSPF v3}
+Wildcard Maske
+
+\subsection{OSPF konfigurieren}
+(Router-ID, Default Route, Passivierung von Clientnetzen, Bandbreite von P-zu-P-Netzen)
+
+
+Statusabfragen zum Fehlersuchen
+
+
+
+
+
+
+
+
+
+
+
+\section{Multiarea OSPF}
+\subsection|{Wann ist es sinnvoll multi-area OSPF anzuwenden?}
+\subsection{Router in Multi-Area Topologien aufteilen}
+\subsection{LSA Typen}
+Rechenaufwand auf eine Area beschränken
+
+\subsection{MA OSPF für IPv4 und IPv6}
+- konfigurueren
+- Statusabfragen
+\subsection{Routen zusammenfassen (für Bekanntgabe in andere Area)}
 
 \end{document}
 

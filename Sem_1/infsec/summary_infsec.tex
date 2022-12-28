@@ -95,27 +95,466 @@ Gesetzestexte wurden nicht für Laien und nicht von technischen Fachleuten gesch
 
 Publikationen können helfen Zweifelsfälle zu beantworten.
 
+
+
+
+
+
 \newpage
 \section{Sicherheitsvokabular}
 
 \subsection{Das Sicherheitsvokabular}
 
-\subsection{Authentication, Authorisation und Accounting}
+\begin{itemize}
+\item \emph{Confidentiality / Vertraulichkeit} -- gewährleistet, dass Daten nur für befugte Entitäten zugänglich sind.
+\item \emph{Integrity / Integrität} -- gewährleistet, dass Daten, Programme oder Funktionen in unveränderter Form belassen werden (immer gemessen am Sollzustand).
+\item \emph{Availabtility / Verfügbarkeit} -- gewährleistet, dass eine Funktion immer dem Funktionsbezüger zur Verfügung steht.
+\item \emph{Authenticity / Authentizität} -- Echtheit, Überprüfbarkeit, Vertrauenswürdigkeit eines Objektes.
+\item \emph{Non-Repudiation / Nicht-Abstreitbarkeit} -- Es kann nachgewiesen werden, dass eine Handlung tatsächlich stattgefunden hat.
+\item \emph{Accountability / Verbindlichkeit} -- Konsequenzen einer Handlung sind rechtlich bindend.
+\item \emph{Asset / Aktivposten} -- Mit einem Aktivposten wird Wert verbunden; ist meistens subjektiv
+\item \emph{Threat / Bedrohung} -- mögliche Gefahr, die eines der Assets in seinen Schutzzielen beeinträchtigen könnte
+\item \emph{Vulnerability / Schwäche} -- Zustand oder Begebenheit, durch die ein Asset gefährdet sein könnte
+\item \emph{Single Loss Expectancy / Schadensausmass} -- Wert, der die Höhe des einzelnen Schadensereigneisses bemisst
+\item \emph{Probability of Occurence / Eintrittswahrscheinlichkeit} -- Faktor, der verkörpert mit welcher Wahrscheinlichkeit ein bestimmtes Ereignis oder ein bestimmter Schaden eintritt; Wird über einen bestimmten, längeren Zeitraum betrachtet
+\item \emph{Risk / Risiko} -- Produkt aus Schadensausmass und Eintretenswahrscheinlichkeit; Ereignis oder ein Effekt, welches nur mit einer gewissen Unsicherheit eintritt
+\item \emph{Risk Strategy / Risikostrategien}
+	\begin{itemize}
+	\item \emph{Risiko Vermeidung} -- Vermeidung funktioniert häufig nicht
+	\item \emph{Risikoreduktion / Risikooptimierung} -- Reduktion ist das Ziel;Erfolgt eine Reduktion nach rein rechnerischen Grundsätzen, wird von \emph{Risiko-Optimierung} gesprochen; Wenn das Risiko über den optimalen Grad gesenkt wird, spricht man von typischerweise von \emph{Risikoreduktion}
+	\item \emph{Risikotransfer} -- Risiko auf grössere Entität transferieren wenn Risiko nicht mehr durch eine einzelne Entität abgefangen werden kann
+	\end{itemize}
+\item \emph{Risikograph} -- Risiken quantifizieren
+\end{itemize}
 
-\newpage
-\section{Technische und nicht-Technische Angriffe}
+\paragraph{Risikograph} wird erstellt, um herauszufinden, wo und wie Risiken reduziert werden können. Der Graph ist gut zum optimieren (wo kann optimiert werden, wo kann Geld gespart werden, wo ist das Potenzial für Risikosenkung und wie viel Geld kann aufgewendet werden).
+
+\begin{itemize}
+\item Welche Risiken werden zusammengefasst?
+\item Welche Risiken werden aufgespalten? -- Risikobetrachtung schön machen
+\item Es gibt Risiken, welche immer als Pakete auftreten:
+\begin{itemize}
+\item Wahrscheinlichkeit, dass mehrere eintreten ist hoch
+\item Rest des Systems muss kompensieren für ausgefallenes System
+\item Kannibalisierung der Ressourcen
+\end{itemize}
+\end{itemize}
+
+
+
+
+\subsection{Authentication, Authorisation und Accounting} AAA-System bildet einen Grundpfeiler der IT-Sicherheit; Primäres Ziel ist \emph{Confidentiality} zu gewährleisten. Vertraulichkeit und Verfügbarkeit von Daten und System gewährleisten 
+\begin{itemize}
+\item \emph{Authentication} -- ist Person wer Person sagt sie ist
+\item \emph{Authorisation} -- darf Person, was Person macht
+\item \emph{Accounting} -- was macht Person (sammeln)
+\end{itemize}
+
+
+\paragraph{Authentication} Benutzern / System / Prozess zweifelsfrei identifizieren; Identifizierung mit Überprüfung; Identifikation oft nicht geheim; Mit Username wird oft identifiziert und mit PW authentifiziert;
+
+\emph{Mehrfaktor-Authentication} -- wird verwendet, wenn ein häheres Mass en Sicherheit gefordert ist; Nur sinnvoll, wenn nicht der selbe Faktor;
+
+Authentifizierungsklassen:
+\begin{itemize}
+\item Something I know -- e.g. Password
+\item Something I have -- e.g. Mobile Phone, App, SMS, Streichliste
+\item Something I am -- Fingerprint, Auge, Gesicht (einfach zu hacken)
+\end{itemize}
+
+\paragraph{Authorisation} Es wird festgelegt, ob ein Benutzer Rechte hat um bestimmte Aktionen auszuführen; Es gibt mehrere Arten von wie die Authorisation gehandhabt werden kann. Typischerweise:
+\begin{itemize}
+\item \emph{MAC} Mandatory Access Control -- Rechte Aufgrund von Regeln; können verloren gehen
+  \begin{itemize}
+  \item Position in Organigramm
+  \item Sicherheitsfreigabe
+  \item Zeichnungsberechtigungsstufe
+  \end{itemize}
+\item \emph{DAC} Discretionary Access Control --  Rechte werden vom Eigentümer eines Zielobjektes vergeben; Rechte werden vergeben, gehen nicht verloren
+  \begin{itemize}
+  \item Eigentümer der Applikation oder Daten möchte es so haben
+  \end{itemize}
+\item \emph{RBAC} Role-Based Access Control -- Rechte werden aufgrund von Rollenzugehörigkeit vergeben; Rechte können verloren gehen
+  \begin{itemize}
+  \item Aufgrund einer Rolle, die im Organigramm / aufgrund Tätigkeit zugewiesen wurde
+  \end{itemize}
+\end{itemize}
+
+Bei allen diesen Modellen wird einem Initiator bestimmte Rechte auf einem Zielobjekt gegeben
+
+
+\paragraph{Accounting} Informationen über die Ressourcenbenutzung sammeln (wer hat wann, was gemacht):
+\begin{itemize}
+\item Kapazitätsplanung
+\item Trendanalysen
+\item Verrechnung
+\item Revisionsfähigkeit
+\end{itemize}
+
+
+%\newpage
+%\section{Technische und nicht-Technische Angriffe}
+
+
+
+
+
 
 \newpage
 \section{Verschlüsselung (Teil 1: Grundoperationen)}
 
+\subsection{Symmetrische Verschlüsselung}
+\begin{itemize}
+\item Gleicher Schlüssel zum Ver- und Entschlüsseln
+\item Einfach zu implementieren
+\item Typischerweise einfache, schnelle Operation (schneller als asymmetrisch)
+\item Kurze Schlüssel sind verhältnismässig sicher
+\item Praktisches Problem: Schlüssel muss sicher zwischen Sender und Empfänger ausgetauscht werden
+\end{itemize}
+
+\paragraph{Symmetrische Verfahren}
+\begin{itemize}
+\item \emph{RC4} gebrochen
+\item \emph{DES} gebrochen
+\item \emph{3DES} gebrochen
+\item \emph{Camelia} 128+ bits
+\item \emph{AES} 128+ bits
+\end{itemize}
+
+\paragraph{Einsatz}
+Verschlüsselungen werden in verschiedenen Richtungen eingesetzt:
+\begin{itemize}
+\item Transportverschlüsselung
+  \begin{itemize}
+  \item Ohne Authentifizierung -- email
+  \item Mit einseitiger Autentifizierung -- https: Informationen auf Website
+  \item Mit wechselseitiger Authentifizierung -- banking: mit nicht-transferierbaren Tokens
+  \end{itemize}
+\item End-to-End Verschlüsselung
+  \begin{itemize}
+  \item Schlüssel zu Informationen nur auf Zielgerät
+  \item nur mit wechselseitiger Authentifizierung mit nicht transferierbaren Tokens (Threema, Signal)
+  \end{itemize}
+\end{itemize}
+
+
+\subsection{Asymmetrische Verschlüsselung}
+\begin{itemize}
+\item Verschlüsselung mit Schlüsselpaar
+\item Verschlüsselung mit anderem Schlüssel als Entschlüsselung
+\item Aufwändige Mathematik und grosse Schlüssellängen werden benötigt (2048+ Bits) (ca. 1000x aufwändiger als symmetrisch)
+\item Austauschbarkeit der Schlüssel existiert, ist aber nicht überall vorhanden
+\end{itemize}
+
+\paragraph{Elliptische Kurven} Punkte werden mit Linien verbunden und anschliessend gespiegelt. Benötigen wesentlich kürzere Schlüssel als RSA um sicher zu sein (geometrische Verschlüsselung).
+
+\paragraph{Verfahren}
+\begin{itemize}
+\item \emph{RSA und DSA}
+\item \emph{ECC192} -- gebrochen
+\item \emph{RS2048} -- vermutlich teilweise gebrochen
+\item \emph{RSA4096+} -- Ein mathematischer Körper wird als Basis errechnet; anfällig für Quantencomputer
+\item \emph{ECC256+}
+\end{itemize}
+
+\paragraph{Ciphers, Modes, Paddings bei Block-Ciphern}
+\begin{itemize}
+\item \emph{Cipher} -- Legt fest wie etwas verschlüsselt wird; Schlüsselgrösse gleich Blockgrösse, wenn nicht anders spezifiziert
+\item \emph{Mode} -- Legt fest, wie mehrere aufeinander folgende Blöcke von Daten verschlüsselt werden (ECB -- 
+\begin{itemize}
+\item Electronic Code Block Mode: Block für Block wird mit dem selben Schlüssel verschlüsselt;  Muster kann erkannt werden.
+\item Vorheriger Block wird zusammen mit Block verwendet und mit Schlüssel verschlüsselt. Erster Block wird mit Initialisierungsvektor genommen
+\end{itemize}
+\item \emph{Padding} -- Legt fest, wie beim letzten Block signalisiert wird, welche Bytes noch benutzt sind und welche nicht (01 bei 1 Byte, 0202 bei 2 Byte etc.)
+\end{itemize}
+
+
+\begin{center}
+\includegraphics[width=12cm]{img/02_ecb.png}
+\end{center}
+
+\paragraph{Ciphern}
+\begin{itemize}
+\item \emph{AES} Schlüssellänge 256 verwenden (128 gebrochen); Blocklänge 128 andere existieren, werden aber seltener verwendet
+\item \emph{Camelia} Feistelcipher mit Schlüssellänge 192, 256 (128 potenziell gebrochen); Blocklänge 128 Bit
+\item \emph{Cast-256} ungebrochen; Schlüssellänge 256 (128, 169 192, 224 potenziell gebrochen); Blockgrösse 128 Bit
+\end{itemize}
+
+\paragraph{Hashing}
+Einwegfunktion um Daten zu einer nicht rückverfolgbaren Zeichenfolge zu formen. Wird mit oder ohne Salt verwendet (Salt wird vor das Dokument gesetzt, welche unabhängig von den Daten ist). Ein Hash sagt nichts über die Eigenschaft eines Dokumentes aus, ist aber einzigartig.
+
+Eine Rainbow-Table enthält alle möglichen Kombinationen von Hashes.
+
+\paragraph{Hashing Verfahren}
+\begin{itemize}
+\item \emph{MD5} -- gebrochen
+\item \emph{RIPE-MD 160} -- gebrochen
+\item \emph{SHA1} -- gebrochen
+\item \emph{SHA2/3 224} -- vermutlich gebrochen
+\item \emph{RIPE-MD 256+}
+\item \emph{SHA2/3 256+}
+\end{itemize}
+
+\subsection{Zertifikate}
+Komponenten von Zertifikaten:
+\begin{itemize}
+\item \emph{Identifikation} -- Felder \emph{SubjectDN} und \emph{SubjectAlternateName}
+\item \emph{Öffentliche Schlüssel} -- öffentlicher Teil eines asymmetrischen Schlüsselpaares; kann zum Prüfen von verschlüsseltem Material oder zum Verschlüsseln von Material an den Zerifikatsanbieter dienen
+\item \emph{Gültigkeitsdauer} -- Startzeitpunkt und Endzeitpunkt
+\item \emph{Verwendungszweck} -- Benutzung kann eingegrenzt werden; e.g. nur für Signatur von Emails oder Authentisierung von Web-Clients
+\end{itemize}
+
+\paragraph{Key- und Truststore}
+Jede Applikation, die mit Zertifikaten arbeitet hat idR 2 Stores und folgenden Inhalt:
+\begin{itemize}
+\item \emph{Keystore} -- Zertifikate und den privaten Schlüssel
+\item \emph{Truststore} -- Trust-Anker (Root-Zertifikate)
+\end{itemize}
+
+
+
 \newpage
 \section{Verschlüsselung (Teil 2: PKI und andere Vertrauensmodelle}
 
-\newpage
-\section{Netzwerkprotokolle für AAA}
+\paragraph{Hybride Verschlüsselung und PFS} \emph{Perfect Forward Secrecy} gewährleistet, dass beim Bruch eines Langzeitschlüssels, die Kommunikation nicht retrospektiv entschlüsselt werden kann.
+
+\subsection{Signieren}
+Vom Dokument wird ein Hash generiert, welcher mit dem privaten Schlüssel verschlüsselt wird. Das Dokument wird unverschlüsselt zusammen mit dem verschlüsselten Hash an den Empfänger geschickt. Der Empfänger kann mit dem öffentlichen Schlüssel des Versenders den Hash prüfen.
+
+\paragraph{Signieren mit OpenSSL}
+
+\begin{center}
+\includegraphics[width=12cm]{img/04_openssl.png}
+\end{center}
+
+\paragraph{Signieren mit PGP}
+
+\begin{center}
+\includegraphics[width=12cm]{img/04_pgp.png}
+\end{center}
+
+\paragraph{Signieren einer Mitteilung}
+
+\begin{center}
+\includegraphics[width=12cm]{img/04_pgp_1.png}
+\end{center}
+
+\paragraph{Passworte "sicher" via Netzwerk prüfen}
+
+\begin{center}
+\includegraphics[width=12cm]{img/04_transfer.png}
+\end{center}
+
+
+\paragraph{Zero Knowledge Proof (ZKP)} Prüfer (P / Peggy) beweisen den Besitz eines Passwortes, ohne dass die verifizierende Instanz durch den Prüfvorgang zusätzliche Kenntnisse über das Passwort erhält. Drei Phasen:
+\begin{itemize}
+\item Peggy legt ein Commitment vor -- mehrere richtige Antworten über ein Zusammenhang
+\item Victor fordert die Aufdeckung einer Antwort aus dem Commitment -- Resultatsets überlappen sich
+\item Peggy deckt die Antwort auf
+\end{itemize}
+
+
+
 
 \newpage
-\section{Angriffe und Szenarien (1-3)}
+\section{Zertifikate}
+
+\paragraph{Begriffe}
+\begin{itemize}
+\item \emph{Zertifikat} -- Überprüfbarer Schlüssel der einem Verwendungszweck dient; Meistens ein unterschriebener Public Key
+\item \emph{Certification Authority (CA)} -- Instanz, die Zertifikate ausstelt
+\item \emph{Registration Authority (RA)} -- Instanz, bei der Zertifikate beantragt werden können und die den Antrag prüft
+\item \emph{Certification Revocation List (CRL)} -- Liste von Zertifikaten, die nicht mehr gültig sind
+\item \emph{Validation Authority (VA)} -- Instanz, die Zertifikate prüft; Überprüfung ist ein vollautomatischer Prozess
+\end{itemize}
+
+\subsection{Public Key Infrastructure (PKI)}
+Eine PKI ist ein System, dass digitale Zertifikate ausstellen, verteilen und prüfen kann.
+
+Vertrauensmodelle:
+\begin{itemize}
+\item \emph{Hierarschisch} -- Vertrauensstellung in eine CA. Jedes von ihr unterschriebene Zertifikat ist für die im Zertifikat angegebenen Aktionen gültig. Die CA unterschreibt ihr eigenes Zertifikat.
+\item \emph{Web of Trust} -- Zertifikate drücken sich gegenseitig ihr Vertrauen aus; jedem selber überlassen, wie Vertrauen definiert ist (e.g. PGP)
+\item \emph{Cross Zertifizierung} -- Zwei CA unterschreiben ihr Zertifikat; Vertrauensstellung nicht immer eindeutig geregelt und kann von Fall zu Fall variieren
+\end{itemize}
+
+\paragraph{Dokumente}
+\begin{itemize}
+\item \emph{Certificate Policy (CP)} -- Beschreibt die Anforderungen an die CA und ihre Arbeitsweise; dient dritten zur Analyse der Vertrauenswürdigkeit
+\item \emph{Certificate Practice Statement (CPS)} -- Beschreibt die praktische Umsetzung des CP Dokumentes un die Praxis; unter welchen Bedingungen ein Zertifikat ausgestellt wird; Wenn CPS nicht öffentlich ist, gibt es noch ein Policy / PKI Disclosure Statement (PDS), welches den öffentlichen Teil enthält
+\end{itemize}
+
+\paragraph{PKI}
+
+\begin{center}
+\includegraphics[width=12cm]{img/05_pki.png}
+\end{center}
+
+\subsection{Verschlüsselte Verbindungen}
+
+Aufbau von Verbindungen kann verschiedene Fehler darstellen:
+\begin{itemize}
+\item Nicht vertrauenswürdige Root-Zertifikate 
+\item Abgelaufene oder zurückgezogene Zertifikate
+\item Verwendung eines Zertifikates, das nicht dafür zugelassen ist
+\end{itemize}
+
+\paragraph{Vertrauensverhältnis mit OpenSSL analysieren}
+
+\begin{center}
+\includegraphics[width=12cm]{img/05_openssl.png}
+\end{center}
+
+Es können auch Server-Verbindungen erstellt werden, um einen Client zu diagnostizieren -- \emph{Ein Server benötigt immer ein Zertifikat}
+
+\begin{center}
+\includegraphics[width=12cm]{img/05_openssl_2.png}
+\end{center}
+\begin{center}
+\includegraphics[width=12cm]{img/05_openssl_3.png}
+\end{center}
+
+\subsection{Security Tokens}
+Security Tokens sind ein wichtiger Faktor bei Mehrfaktor-Authentifizierung
+
+\begin{itemize}
+\item \emph{Zeitsynchronisierte Tokens} -- Präsentieren einen OTP aus ggw. Zeit und einem Geheimnis
+\item \emph{CR-Basierte Tokens} -- Eingabe einer Challenge erfolgt über eine Schnittstelle; Challenge wird mit dem Schlüssel der Person "signiert" und zutückgesandt
+\item \emph{Usage Based Tokens} -- Eine Art "Streichliste"; Bei jedem Druck auf eine Taste wird der nächste Code freigegeben; vorhergehende Codes werden automatisch invalidiert
+\end{itemize}
+
+\paragraph{Verbinden von Security Tokens}
+Security Tokens sind in verschiedenen Varianten verfügbar
+\begin{itemize}
+\item Online -- via USB; NFC; Fest auf einem Gerät verbaut
+\item Offline -- Eingabe über Tastatur oder via Telefon
+\end{itemize}
+
+Wenn ein Token online ist, ist bei sicheren Tokens eine manuelle Aktion nötig um den Authentisierungsvorgang zu imitieren
+
+\paragraph{Kritik}
+
+\begin{itemize}
+\item \emph{Verluste oder Diebstahl} -- Verlust oder Diebstahl grundsätzlich kein Problem; muss mit den entsprechenden Massnahmen begleitet werden
+\item \emph{Man-in-the-Middle} -- Die meisten Smarttokens überprüfen nicht ihren Peer-Partner; Authentisierungs-Tokens sind anfällig für MITM wenn nicht anderweitig abgesichert
+\end{itemize}
+
+
+
+
+
+
+
+
+\newpage
+\section{Technische und nicht-technische Angriffe}
+Es gibt mehrere Möglichkeiten Ereignisse zu klassifizieren.
+
+
+Abwehrstrategien:
+\begin{itemize}
+\item Angriff verhindern
+\item Angriff erschweren
+\item Angriff ableiten (intern oder extern)
+\item Schaden kontrollieren
+\item Angriff entdecken (während und danach)
+\item Vom Angriff erholen
+\end{itemize}
+
+
+
+\subsection{Nicht-Technische Angriffe}
+Angriffe, die ein Schutzziel beeinträchtigen können und als Ziel keine technische Anlage haben. Ziele sind Menschen, Prozesse, Zustände.
+
+\paragraph{Dumpster Diving} vertrauliche Informationen werden über Abfall, Altpapier, ausrangierte Hardwareoder vergleichbare Kanäle besorgt; Sonderform über Webarchiv in der Vergangenheit publizierte Informationen beschaffen
+
+\paragraph{Spying / Eavesdropping} Informationen werden beschafft, indem Beobachtungen angestellt werden, ohne dass Entitäten manipuliert werden. Beobachtungen können visuell, akustisch, technisch sein; \emph{Eavesdropping} ist, wenn Informationen über das Mitschneiden von legitimen Datenflüssen beschafft werden
+
+\paragraph{Social Engineering} Menschen manipulieren um Sicherheitssperren zu umgehen. Mithilfe:
+\begin{itemize}
+\item Impersonation
+\item Tailgating
+\item Phishing / Vishing / Whaling
+\item Popup Fenster
+\item Interessante Applikationen
+\item Hoaxing
+\end{itemize}
+
+\emph{Angriffskanäle} -- Email, Telefon, Soziale Medien, SMS, Brief, direkt
+\emph{Gegenmassnahmen} -- Ausbildung aller Beteiligten; Etablieren von geeigneten Prozessen
+
+
+\subsection{Technische Angriffe}
+Klassifikation nach
+\begin{itemize}
+\item Schutzziel
+\item Strategie
+\item Schweregrad des potentiellen Schadens
+\item Wahrscheinlichkeit
+\item Komplexität
+\end{itemize}
+
+\paragraph{Gegenmassnahmen} 
+\begin{itemize}
+\item Zugriff aus die Systeme limitieren -- \emph{verhindern}
+\item Angriffsfläche gering halten -- \emph{erschweren, kontrollieren}
+\item Schadaktivitäten erkennen -- \emph{entdecken}
+\item Potentiellen Schaden gering halten -- \emph{ableiten, erholen}
+\end{itemize}
+
+\paragraph{Phasen}
+Angriffe werden selten isoliert sondern koordiniert geführt. Phasen von Attacken \emph{1)} Reconnaissance, \emph{2)} Exploitation, \emph{3)} Reinforcement, \emph{4)} Covering Tracks
+
+\paragraph{(Distributed) Denial-of-Service} 
+Bei der DoS-attacke geht es darum, ein Ziel vorübergehen oder bleibend vom Netzwerk zu schädigen. Die einfachsten Angriffe verursachen Überlastungen in einem Teilsystem. Fortgeschrittene Attacken zerstören Daten / Programme oder Hardware.
+
+\paragraph{Man in the Middle} Dritter klinkt sich in Konversation ein; lässt sich durch \emph{Mutual Authentication} verhindern. Bei Man in the Browser kontrolliert der Angreifer einen der Endpunkte (nach der abgesicherten Verbindung. 
+
+
+
+\newpage
+\section{Angriffe und Szenarien}
+Verschiedene Arten von Exploits: technische Möglichkeit, Schachstellen eines Programms oder Hardware auszunutzen. Viele Arten von Exploits: \emph{1)} Remote Code Execution, \emph{2)} Local Privilege Escalation, \emph{3)} Information Disclosure / Manipulation.
+
+Alle Exploits können Attribute aufweisen. Für Angreifer sind Exploits am attraktivsten, die öffentlich nicht bekannt sind.
+
+
+\paragraph{Responsible Disclosure} Schwachstellen werden oft einer \emph{Responsible Disclosure} unterworfen. Anfänglich wird nur publiziert, dass eine Schwäche in einem System oder Software hat und wie gravierend sie ist. Details werden dem Herstelle oder Verantwortlichen zugänglich gemacht.
+
+Gegenseitig dazu ist \emph{Full Disclosure}, wenn Informationen schnellstmöglich breit zugänglich gemacht werden. Somit haben Täter und Opfer den selben Wissensstand.
+
+\paragraph{Zero Day Exploit}
+Schwachstellen, die durch die Entdeckung durch eine Malware von der Öffentlichkeit entdeckt werden.
+
+
+\subsection{Angriff}
+\begin{itemize}
+\item \emph{(Cache-)Poisoning} -- mittels falscher Informationen Datenströme umleiten: DNS-Poisoning, ARP-Spoofing, DHCP-Poisoning
+\item \emph{Erpressung} -- Typischerweise \emph{Ransomware}; Existiert auch über den Verkauf von gebrauchten Festplatten
+\item \emph{Privilege Escalation} -- Sicherheitsbarrieren umgehen; Übernahme von Rechten hochprivilegierter Prozesse oder durch Überwindung von Sicherheitsbarrieren
+\end{itemize}
+
+\paragraph{Webbasierte Angriffe}
+Häufigste Angriffe sind: \emph{1)} Drive-by-Infektionen, \emph{2)} Injection Attacken (Cross-Site-Scripting, SQL-Injektion)
+
+\begin{itemize}
+\item \emph{Persistent} -- In einem Blog, Kommentarfunktion, Gästebuch; e.g. über Upload von Files, Verlinkung von ungeprüften Quellen
+\item \emph{Non-Persistent} -- Einfachste Attacke; untergeschobener Link meistens im Zusammenhang mit einem Phising-Mail
+\item \emph{DOM-Based} -- Untergeschobener Link wird aus dem DOM des Browsers geladen
+\end{itemize}
+
+
+\paragraph{Directory / Path-Traversal-Attack} Lokale Files werden ausserhalb des Server-Roots geladen und übermittelt über \emph{1)} Backreferencing, \emph{2)} Logische Links.
+
+
+\paragraph{CVSS Scores} Geben den Schweregrad einer gefundenen Schwachstelle an
+\begin{itemize}
+\item \emph{Basis Metrik} -- Grundsätzliches über Exploit
+\item \emph{Zeitbasierte Metrik} -- Ändern sich über die Zeit
+\item \emph{Umfeld-Metrik} -- Firmenspezifisch / Setup-Spezifisch
+\end{itemize}
+
+
 
 \newpage
 \section{Malware}
@@ -243,7 +682,7 @@ Es bietet:
 \begin{itemize}
 \item Vorteile
     \begin{itemize}
-    \item Unterstützung für Disks >2TB
+    \item Unterstützung für Disks $>$2TB
     \item Prozessorunabhängige Plattform für Treiber
     \item Modularer Aufbau (Inhalt des UEFI kann modifiziert werden)
     \item Integrierte Unterstützung eines Bootmanagers (Anstelle der Bootsektoren
@@ -263,17 +702,172 @@ TPM und TP sind nicht dasselbe. Ein TPM stellt eine sichere Plattform in einem n
 
 SIM-Karte eines Mobiltelefons stellt sicher, dass die Identität des Telefons nicht von einer Drittpartei übernommen werden kann.
 
+
+
+
+
+
+
+
 \newpage
 \section{Sicherheit von HW / Plattform / Virtualisierung}
+
+\subsection{Sicherheit im OS}
+Alles was ein Betriebssystem bietet, tut, verbietet, oder gezielt unterlässt um die Schutzziele zu gewährleisten.
+
+\paragraph{Wahrnehmbare Sicherheitsaspekte im Betriebssystem}
+\begin{itemize}
+\item Login
+\item Dateirechte -- OS unterschiedlich
+\item Prozessrechte -- Bei allen Systemen ungefähr gleich sichtbar
+\item Signierung -- Viele Treiber können nicht installiert werden, wenn sie nicht signiert sind
+\item Verschlüsselung
+\item Warnung bei Gefahrenmomenten -- Warnungen wenn ein potenziell gefährliches Programm ausgeführt wird
+\end{itemize}
+
+Viele Betriebsysteme bieten auch eine Gefahr für die Privatsphäre; Meistens verbergen sich diese hintern schönen "Features" -- e.g. Cortana hört immer zu, Handschrifterkennung, Texterkennung, \emph{Update-Empfehlung}.
+
+\paragraph{Updateempfehlung}
+Windows empfängt von einem Gerät, welche Software (Version) installiert ist und sendet eine Update-Version. Client exponiert sich somit und Microsoft weiss, welche Software (-Version) auf welchem Gerät installiert ist.\\
+
+Es ist schwierig etwas vor dem Hersteller des OS zu verbergen. Daten werden gesammelt, und in Features gepackt, welche den Nutzenden als "schöne" Funktionen angepriesen werden.
+
+\subsection{Gegenmassnahmen}
+
+
+\paragraph{Nicht direkt sichtbare Sicherheitsaspekte des OS}
+\begin{itemize}
+\item \emph{CPU-Domains} -- Je nach Programm, das läuft, läuft die CPU auf verschiedenen Berechtigungsstufen (Ring 0 alles verfügbar Kernel Mode, Ring 3 User Mode)
+\item \emph{Sandboxes} -- In einer Sandbox ist man alleine; isolierten Bereich, innerhalb dessen jede Massnahme keine Auswirkung auf die äussere Umgebung hat
+\item \emph{Protected-Mode} -- Möglichkeit um Prozesse voneinander abgrenzen; einzelner Speicherbereich für Prozess definieren (Prozess wird abgeschaltet, wenn Speicher überwachsen wird)
+\item \emph{ESP} -- Daten in Speicherbereich, welche nicht als Code ausgeführt werden dürfen
+\item \emph{ASLR} -- Sorgt dafür, dass der Inhalt des Speichers zufällig angeordnet wird (gegen Buffer Overflows)
+\item \emph{SMEP} -- Kernel-Mode-Programme dürfen im Userland-Speicher keinen Code ausführen (gegen zweite Phase von Buffer Overflows)
+\item \emph{SMAP} -- Kernel-Mode-Programme können nicht auf Userland-Speicher zugreifen
+\item \emph{Canaries} -- Detektieren, wenn die Buffergrenzen zwischen Variablen verletzt wurden; nicht gut, wenn diese Prozesse abgeschossen werden
+\item \emph{Watchdogs} -- Überwachen die korrekte Funktion von Betriebssystem-Diensten; NMI -- non-maskeable-interrups
+\end{itemize}
+
+
+\paragraph{Einfache Erhöhung der Rechte}
+\emph{Windows} -- Mit User Account Control (UAC) kann punktuell ein Prozess mit Administratorrechten ausgeführt werden. Das Programm wechselt in einen geschützten Modus und fragt den Benutzer, ob er sicher ist. Alle Userland-Prozesse werden eingefroren, damit nicht durch ein Programm automatisch angenommen werden kann.\\
+
+\emph{Linux} -- Damit die root-Rechte möglichst fein vergeben werden können, bietet Linux "sudo" an. Es kann genau festgelegt werden, welcher Benutzer welche Programme ausführen kann.
+
+
+\paragraph{Gefahren des Suchpfades}
+Ein Verzeichnis in einem Suchpfad sollte nicht durch andere Benutzer beschreibbar sein, weil andere Benutzer sonst Programme, die im Suchpfad sind, übersteuern könnten und damit die Rechte des Benutzers kapern.
+
+Verzeichnisse können mit dem selben Namen wir Systemprogramme enthalten, diese werden dann möglicherweise ausgeführt.
+
+\paragraph{Hardening}
+
+Vorgang des Absichern des Betriebssystems. Hardening-Aktivitäten:
+\begin{itemize}
+\item Patchen mit speziellen, sicherheitsfördernden Technologien
+\item Einführen von Passwortrichtlinien oder spezieller Authentisierung
+\item Deaktivieren und entfernen nicht benötigter Programme, Benutzer und Services
+\item Einschränken der lokalen Benutzer-Rechte
+\item Das verwenden einer lokalen Firewall
+\end{itemize}
+
+
+Nicht dazu gezählt (dennoch sicherheitsrelevant): \emph{1)} Einspielen sicherheitsrelevanter Patches, \emph{2)} Ausbilden von Benutzern
+
+
 
 \newpage
 \section{Sicherheit von OS / Software}
 
+\subsection{Sicherheit bei Software}
+\paragraph{Häufige Fehler bei Software}
+\begin{itemize}
+\item \emph{Programme haben zu hohe Rechte} -- z.B weil mit admin-rechten entwickelt wurde
+\item \emph{Programme prüfen Berechtigungen unzureichend} -- Authentication-Bypass; Bei API wird der Schutz entfernt
+\item \emph{Programme schützen ihre Funktionen unzureichend} -- z.B. Frontend prüft / nicht redundante Implementierung im Backend
+\end{itemize}
+
+Prozesse, welche root-Berechtigungen brauchen: Start mit root, sobald gestartet, werden root-Berechtigungen entfernt (e.g. Apache Server) -- Main-Prozess
+
+\paragraph{Generelle Fehler von Programmierern}
+\begin{itemize}
+\item Sicherheitsfeatures (UAC, Virenschutz) aus, weil sie hinderlich sind
+\item Zeitdruck -- Features sind Endkunden meistens wichtiger als Sicherheit
+\item Wenig Verständnis für Sicherheit
+\item Verantwortung an Sicherheitsscanner delegieren -- viele false-positive; Sicherheit nicht garantiert
+\item Sicherheits-Audit erst am Schluss, wenn das ganze Programm schon entwickelt wurde
+\item Programmierer denken in \emph{Funktionen}, nicht in \emph{Sicherheitsstufen}
+\item Verwendung von APIs oder Frameworks, ohne sich zu fragen, wer diese sonst ausführen kann -- billion-laughs-Attake; xml external-entity Attacke
+\end{itemize}
+
+\paragraph{Sichere Sprachen}
+Es gibt Sprachen, bei denen bestimmte Fehler wahrscheinlicher sind, aber keine Sprache ist sicher -- jede Sprache kann sicher oder unsicher programmiert werden.
+
+
+\subsection{Watchdogs}
+Watchdogs \emph{1)} gewährleisten die Verfügbarkeit von Systemen und Programmen, \emph{2)} ergreifen korrigierende Massnahmen bei Fehlfunktion der zu überwachenden Komponente \emph{3)} werden anhand deren Fehlererkennung unterschieden:
+
+\begin{itemize}
+\item \emph{Time-Out-Watchdog} -- Watchdog meldet sich bei zu überwachender Software; wenn nach bestimmter Zeit (time-out) keine Antwort, wird (je nachdem) das System neu gestartet
+\item \emph{Window-Watchdog} -- Watchdog meldet sich bei zu überwachender Software; Antwort nach gewissem Zeitfenster erwartet; keine oder zu späte Antwort löst Massnahmen aus; Zu früh gesendete Antworten werden ignoriert
+\item \emph{Smart-Watchdog} -- Löst Operation aus und bewertet Ausgabe und handelt entsprechend
+\end{itemize}
+
+
+
 \newpage
 \section{Sicherheit im Netzwerk}
 
-\newpage
-\section{Sicherheit beim Endbenutzer}
+\paragraph{Angriffe durch Clients}
+Server sind Aufgrund ihrer Funktion (Dienstleistungen grosser Gruppe von Clients zur Verfügung stellen) in einem Netzwerk besonders exponiert. Attacken auf Server:
+
+\begin{itemize}
+\item Brute-Force-Attacke auf Credentials
+\item Brute-Force-Attacken auf URLs
+\item Logische Bombe
+\item Überlastung -- e.g. DoS Attacke
+\end{itemize}
+
+
+\paragraph{Angriffe durch Server}
+Clients sind weniger exponiert; normalerweise keine öffentliche IP; Attacken auf Clients: 
+
+\begin{itemize}
+\item Buffer Overflow Exploitation eines Clients -- e.g. Webbrowser oder Plugin
+\item Reflektor Missbrauch -- Als Stufe für eine Server Attacke
+\end{itemize}
+
+
+\paragraph{Logische Bombe}
+Versuch, Ressourcen eines Servers auszuhungern; 
+
+\begin{itemize}
+\item \emph{Billion Laughs} -- XML-File mit selbst-referenzierendem Inhalt. Wenn Parser ein solches File auspackt, benötigt die Representation mindestens 3GB Speicherplatz.
+\item \emph{ZIP-Bomb} -- Ein zip-File, welches wenige kB gross ist und ausgepackt riesig gross. Berühmte ZIP-Bombe ist 42.zip -- 42KB gross; ausgepackt 4.5 PB
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=12cm]{img/13_bi_lau.png}
+\end{center}
+
+
+
+\paragraph{Reflektor-Attacken}
+Angreifer sendet Daten an einen oder mehrere Empfänger und diese generieren Verkehr, der an das anzugreifende Ziel gesendet wird. Somit \emph{1)} verbergen sie die wahren Täter und \emph{2)} wird die Bandbreite der Attacke erhöht.\\
+
+Smurf-Attake: Ping-Paket wird mit gefälschter Absender-Adresse an eine Broadcast-Addresse eines Netzwerkes gesendet. Schlecht konfigurierte Clients geben darauf Antwort, indem sie ein Paket an den vermeintlichen Absender (eigentliches Ziel) senden
+
+
+\paragraph{Drive-By-Infektionen}
+Dateien werden "unbeabsichtigt" auf einen Client heruntergeladen. Je nach Ort und Ausgestaltung werden diese Programme ausgeführt und setzen sich auf dem Client fest; Webbrowser -- Verbreitung über angepasste Webseiten (e.g. ungepatchtes CMS)
+
+
+%\newpage
+%\section{Sicherheit beim Endbenutzer}
+
+
+
+
 
 
 
