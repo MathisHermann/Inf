@@ -1376,10 +1376,58 @@ Schritte zur Konfiguration:
 
 \subsection{Funktionsweise}
 
+\paragraph{Komponenten}
+\emph{LS-Protokolle} tauschen die Routing-Informationen über definierte Paket-Typen aus. Für OSPF werden fünf Pakettypen unterschieden: \emph{1)} Hello Packet, \emph{2)} Database Description Packet, \emph{3)} Link-state Request Packet, \emph{4)} Link-state Update Packet, \emph{5)} Link-state Acknowledgement Packet.\\
+
+\begin{center}
+\begin{tabular}{ | m{0.5cm} | m{4cm}| m{5.5cm} | } 
+Typ & Packet Name&Erklärung\\ 
+\hline
+1 & Hello Packet & Finden von Nachbaren und Aufbauen von Nachbarschaften; Wahl der Designated und des Backup Designated Routers\\
+2 & Database Description (DBD) & Prüfen der Synchronisierung der Datenbank zwischen Routern; Router gibt bekannt von welchen Quellen die LS in der LSDB sind\\
+3 & Link-State Request (LSR) & Fordert spezifische Link-State Einträge von Router zu Router\\
+4 & Link-State Update (LSU) & Sendet spezifisch geforderte Link-State Einträge\\
+5 & Link-State Acknowledgement (LSAck) & Bestätigung der anderen Packet Typen\\
+\end{tabular}
+\end{center}
 
 
+Es werden drei Datenbanken geführt:
+\begin{center}
+\begin{tabular}{ | m{1.7cm} | m{2.5cm}| m{5.8cm} | } 
+Datenbank & Tabelle&Erklärung\\ 
+\hline
+Adjacency DB & Nachbarschafts-Tabelle & Auflistung der Verbindungen zu OSPF Nachbarn\\
+Liink-State DB & Topologie-Tabelle & Auflistung mit allen Routern und der daran angeschlossenen Links; Alle Router sollten die gleiche LSDB haben\\
+Forwarding DB & Routing-Tabelle & Auflistung aller Zielnetze mit dem kürzesten Weg zu diesen Zielnetzen; Jeder Router hat eine eigene Routing-Tabelle\\
+\end{tabular}
+\end{center}
 
+\paragraph{Ablauf LS-Protokoll}
+\begin{enumerate}
+\item \emph{Aufbau der Link State} -- Jeder Router sammelt die Infos über die direkt angeschlossenen Netze und deren Zustand und schreibt sie in die Link-State Datenbank (LSDB) respektive in die Topologie-Tabelle
+\item \emph{Erstellen von Nachbarschaften} -- Jeder Router sendet allen Links, welche beim Routing mitmachen, Hello Pakete. Empfängt er \emph{Hello} Pakete von einem anderen Router, identifizieren sie sich gegenseitig, erstellen eine Nachbarschaft und tragen sich in ihre Nachbarschaftstabelle ein
+\item \emph{Synchronisation der LSDB} -- Zwei Router tauschen die Informationen ihrer LSDB au. Nach der Synchronisation hat das LS-Protokoll synchronisiert
+\item \emph{Berechnung der Routing-Tabelle} -- Jeder Router berechnet aus seiner Topologie-Tabelle den kürzesten Weg zu jedem Zielnetz und fügt die Ergebnisse der SPF-Berechnung in die Routing-Tabelle ein. Die Pfadkosten ergeben sich als Summe der Kosten jedes Links
+\item \emph{Aktualisierung der Routing-Tabelle} -- Jeder Router, bei dem Änderungen der Link States auftreten, sendet ein \emph{Link-State Advertisement} an die eingetragenen Nachbarn. Die LSAs werden durch das ganze Internetwork geflutet. Jeder Router schreibt die Änderungen in seine LSDB und rechnet den Routing Algorithmus für die Zielnetze
+\end{enumerate}
 
+\paragraph{Funktionsweise} Das OSPF-Protokoll durchläuft folgende endliche Zustandsmaschine:
+\begin{enumerate}
+\item \emph{Down State} -- Router sendet Hello Packets; Souter hat noch keine Hello Packets erhalten
+\item \emph{Init State} -- Router erhält Hello Packets auf Link; Router wertet die erhaltenen Informationen aus und initiiert eine Nachbarschaft
+\item \emph{Two-Way State} -- Auf einem MA-Netz: Designated Router und Backup Designated Router auswählen
+\item \emph{ExStart State} -- Aushandlung der Master-Slave Beziehung und der DBD Sequenznummer; Master initiiert DBD Austausch
+\item \emph{Exchange State} -- Router tauschen DBD aus; In DBD-Paket beschreibt der Router, über welche Router er LS-Informationen in der LSDB hat;Falls einem Router LS fehlen, welche Neighbour hat, wechseln in Loading State; Falls alle LS hat, wechseln in Full State
+\item \emph{Loading State} -- Mit LSRs verlangt der Router den Inhalt der LSDB des Nachbarn. Mittels LSU teilt ein Router den Inhalt der LSDB mit; Durchrechnen des SPF-Algorthmus
+\item \emph{Full State} -- Das Routing-Protokoll auf den Routern läuft und hat konvergiert; Das Protokoll reagiert auf Änderungen im Netz
+\end{enumerate}
+
+\paragraph{Two-Way State} An einem broadcast multiaccess Netz können isch mehrere Router befinden -- Herausforderung für LS-Protokolle: $N * (N-1) / 2$ Nachbarschaften.\\
+
+Es wird ein Designated und ein Backup Designated Router bestimmt. Alle anderen Router bauen eine Nachbarschaft zum DR und BDR auf aber keine zu den anderen. Sie senden ihre Updates an den DR und den BDR. Diese hören auf die Mcast-Adresse 224.0.0.6.\\
+
+Der (B)DR wird Anhand von drei Kriterien gewählt: \emph{1)} Router mit der höchsten OSPF IF Priority wird DR, \emph{2)} Router mit der zweithöchsten OSPF IF Priority wird BDR; Falls gleich entscheidet die höchste Router-ID. Die Wahl beginnt sobald ein Netz auf einem Router für OSPF freigegeben wird. Sobald ein DR bestimmt ist, bleibt er dies, bis der Routing-Prozess neu gestartet wird.
 
 \subsection{Metrik von OSPF und Parameter Bandwidth}
 OSPF rechnet mit Kosten eines Links -- umgekehrt proportional der Datenrate des Links: \verb+cost  = reference-bandwidth / IF bandwidth+\\
@@ -1438,16 +1486,40 @@ LS-Algorithmus fuer den Knoten u (Quelle):
 Wildcard Maske
 
 \subsection{OSPF konfigurieren}
-(Router-ID, Default Route, Passivierung von Clientnetzen, Bandbreite von P-zu-P-Netzen)
+Router-ID
+\begin{lstlisting}
+R1(config)#router ospf 1
+R1(config-router)#router-id 10.255.255.1
+\end{lstlisting}
 
+Passive Interface
+\begin{lstlisting}
+R2(config)#router ospf 1
+R2(config-router)#passive-interface G0/0
+\end{lstlisting}
 
-Statusabfragen zum Fehlersuchen
+Default Route
+\begin{lstlisting}
+// Definiere Default Route
+R2(config)#ip route 0.0.0.0 0.0.0.0 Serial0/1/0
+// Default Route im Netz bekanntgeben
+R2(config)#router ospf 1
+R2(config-router)#default-information originate
+\end{lstlisting}
 
-
-
-
-
-
+OSPFv3
+\begin{lstlisting}
+R1(config)#ipv6 unicast-routing
+R1(config)#interface FastEthernet0/0
+R1(config-if)#ipv6 address 2001:DB8:AB:1::1/64
+R1(config-if)#ipv6 ospf 1 area 1
+R1(config-if)#exit
+R1(config)#ipv6 route ::/0 Serial0/0/0
+R1(config)#ipv6 router ospf 1
+R1(config-rtr)#auto-cost reference-bandwidth 10000
+R1(config-rtr)#default-information originate
+R1(config-rtr)#passive-interface g0/0
+\end{lstlisting}
 
 
 
