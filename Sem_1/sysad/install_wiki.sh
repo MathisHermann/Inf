@@ -36,6 +36,7 @@ prepare ()
     apt_install "php-fpm"
     apt_install "php-intl"
     apt_install "php-sqlite3"
+    apt_install "openssl"
 
     # Safety check to make sure that Apache is not already installed
     if hash apache2 2>/dev/null; then
@@ -44,6 +45,15 @@ prepare ()
 
     # Install nginx and PHP
     apt_install 'nginx'
+
+    generate_cert
+}
+
+generate_cert ()
+{
+    mkdir /etc/nginx/ssl
+
+    sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/nginx/ssl/example.key -days 365 -out /etc/nginx/ssl/example.crt
 }
 
 install_app ()
@@ -75,14 +85,19 @@ nginx_config ()
     tab="$(printf '\t')"
 
     cat > /etc/nginx/sites-available/mediawiki <<EOF
-server {
+server{
 ${tab}listen 80 default_server;
-${tab}listen [::]:80 default_server;
+${tab}server_name _;
+${tab}return 301 https://86.119.32.213$request_uri;
+}
 
+server {
 ${tab}# SSL configuration
 ${tab}#
-${tab}# listen 443 ssl default_server;
-${tab}# listen [::]:443 ssl default_server;
+${tab}listen 443 ssl default_server;
+${tab}listen [::]:443 ssl default_server;
+${tab}ssl_certificate /etc/nginx/ssl/example.crt;
+${tab}ssl_certificate_key /etc/nginx/ssl/example.key;
 ${tab}#
 ${tab}# Note: You should disable gzip for SSL traffic.
 ${tab}# See: https://bugs.debian.org/773332
@@ -100,7 +115,7 @@ ${tab}root /var/www/html;
 ${tab}# Add index.php to the list if you are using PHP
 ${tab}index index.php index.html index.htm;
 
-${tab}server_name _;
+${tab}server_name example.com www.example.com;
 
 ${tab}location / {
 ${tab}${tab}# First attempt to serve request as file, then
