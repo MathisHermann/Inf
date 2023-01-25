@@ -14,6 +14,8 @@
 \date{\today}
 \maketitle
 
+Diese Zusammenfassung ist basierend auf den gegebenen Unterlagen. Alle Angaben ohne Gewähr. Weitergabe und Verbreitung erlaubt nur mit expliziter Genehmigung.
+
 \section{Gesetzliche Grundlagen}
 Schweizer Recht ist uneingeschränkt anwendbar, wenn Täter, Opfer und Tatort in der Schweiz liegen. Im Internet ist das ein Problem.
 
@@ -579,7 +581,7 @@ Bei Angriff: \emph{Sammeln} und dann \emph{Analysieren}.
 
 Sind nur Indikatoren und müssen nicht erfolgreich sein.
 
-\paragraph{Indikatoren für eine Komprimittierung (IOC)}
+\paragraph{Indikatoren für eine Kompromittierung (IOC)}
 Bei Angriff: \emph{Isolieren} (Netzwerktechnisch nicht mehr erreichbar machen -- unabhängig machen von anderen Systemen) und dann Systemzustand \emph{einfrieren} (Snapshot erstellen und sicherstellen; Festplatten stromlos machen; Ausschalten und nicht herunterfahren -- e.g. Stromstecker ziehen).
 
 GANZ WICHTIG: Was muss bei einer Kompromittierung eines Systems gemacht werden?
@@ -676,6 +678,13 @@ Im TPM befindet sich:
 TPM stellt sicher, dass keine MITM-Attacke ausserhalb des TPM möglich ist. Es stellt sicher, dass externe Kommunikation bis zur Plattform-Grenze immer sicher ist und dass aller Software vertraut werden kann.
 
 \paragraph{Fähigkeiten der meisten TPM}
+Die meisten Fähigkeiten eines TPM ähneln einer Smartcard:
+\begin{itemize}
+\item Sicherer Zufallsgenerator
+\item RSA Schlüsselgenerator Verschlüsselungs-/Entschlüsselungs-/Signier-Einheit
+\item Einen Schlüssel der im TPM-Modul erzeugt wird und einzigartig ist.
+\item Eine CA, die für Signaturen verwendet werden kann (einzigartig pro TPM) Eine CA, die für Signaturen verwendet werden kann (kann die selbe CA für mehrere TPMs sein)
+\end{itemize}
 
 \paragraph{Unified Extendable Firmware Interface (UEFI)} ist ein teilweiser Ersatz für das BIOS.
 Es bietet:
@@ -862,9 +871,44 @@ Smurf-Attake: Ping-Paket wird mit gefälschter Absender-Adresse an eine Broadcas
 Dateien werden "unbeabsichtigt" auf einen Client heruntergeladen. Je nach Ort und Ausgestaltung werden diese Programme ausgeführt und setzen sich auf dem Client fest; Webbrowser -- Verbreitung über angepasste Webseiten (e.g. ungepatchtes CMS)
 
 
-%\newpage
-%\section{Sicherheit beim Endbenutzer}
+\newpage
+\section{Sicherheit beim Endbenutzer}
 
+\subsection{Berufe in IT-Sicherheit}
+
+\paragraph{Datenschutzbeauftragter} -- Ist für die Einhaltung des Datenschutzes in einer Firma verantwortlich; gibt es in öffentlichen Organen und bei grösseren Firmen; überwacht Fluss und Lagerung von personenrelevanten Daten und sorgt für die Einhaltung der gesetzlichen Grundlagen
+
+\paragraph{Chief Information Security Officer (CISO)} -- Verantwortlich für die interne Sicherheit; definiert Schutzziele einer Organisation und identifiziert Schutzwürdige Objekte; sorgt für Definition und Aufbau der Schutzmassnahmen und überwacht deren Umsetzung
+
+\paragraph{Incident-Manager (IT)} -- Problembehandler in grossen Firmen mit starker Ausprägung in der IT
+
+\paragraph{Forensiker} -- Sammelt belegbar Informationen und liefert revisionssichere Fakten für ein juristisches Verfahren
+
+\paragraph{Fraud-Analyst} -- Spezialist für Aufdecken von Unstimmigkeiten auf betrügerischer Basis aufgrund gegebener Daten
+
+\subsection{Sicherheit beim Enduser}
+Entscheidungen, welche Endbenutzer treffen können, um die Sicherheit nachhaltig zu beeinflussen:
+\begin{itemize}
+\item Auto-Logon-Features
+\item Gespeicherte Passworte und Auto-Fill-Optionen ohne hinreichenden Schutz
+\item Öffnen von potentiell gefährlichen Mails
+\item Verbinden von Geräten mit unsicheren Netzwerken (e.g. gratis WLAN)
+\item Verbinden von schlecht geschützter Hardware mit dem Firmennetz
+\item Schwache Passworte
+\item Hohes Risikoverhalten
+\end{itemize}
+
+
+
+\subsection{Schutzarten von Sicherheitsmerkmalen}
+Sicherheitsmerkmale können auf verschiedene Arten geschützt werden. Jeder Schutz hat Vor- und Nachteile. Schutzarten:
+\begin{itemize}
+\item Ungeschützt -- Auto-Fill bei Webbrowsern
+\item Geschützt mit einem einmalig einzugebenden Sicherheits-Token -- Auto-Fill mit Masterpasswort
+\item Geschützt mit einem repetitiv einzugebenden Sicherheits-Token -- Passwortdatenbank mit autoclose und Token-Bestätigung
+\end{itemize}
+
+\subsection{Kleine Ursache, Grosse Wirkung}
 
 
 
